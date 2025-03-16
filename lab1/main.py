@@ -16,12 +16,12 @@ def main():
 
         # task2
         cod25 = read_txt(TASK2_FILES["plain_text"])
-        save_json(TASK2_FILES["frequency"], sort_dict(frequency_count(cod25)))
+        save_json(TASK2_FILES["frequency"], sort_dict(frequency_count(cod25), True))
         key_cod25 = read_json(TASK2_FILES["key"])
         decrypted_text = text_encryption(cod25, key_cod25)
         save_txt(TASK2_FILES["decrypted_text"], decrypted_text)
     except Exception as e:
-        print(f"Something went wrong: {e}")
+        print(f"Error! {e}")
 
 
 if __name__ == "__main__":
