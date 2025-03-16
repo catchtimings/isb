@@ -1,7 +1,7 @@
 import json
 
 
-def read_from_file(directory: str) -> str:
+def read_txt(directory: str) -> str:
     """
     The function opens a text file and reads the data into a string
     :param directory: file directory
@@ -11,7 +11,7 @@ def read_from_file(directory: str) -> str:
         return file.read()
 
 
-def write_to_file(directory: str, data: str) -> None:
+def save_txt(directory: str, data: str) -> None:
     """
     The function opens/creates a text file and writes data to it
     :param directory: file directory
@@ -22,7 +22,7 @@ def write_to_file(directory: str, data: str) -> None:
         file.write(data)
 
 
-def read_data(directory: str) -> dict[str, str]:
+def read_json(directory: str) -> dict[str, str]:
     """
     The function opens a json file and reads the key as a dictionary
     :param directory: json file directory
@@ -32,7 +32,7 @@ def read_data(directory: str) -> dict[str, str]:
         return json.load(file)
 
 
-def save_data(directory: str, data: dict[str, float]) -> None:
+def save_json(directory: str, data: dict[str, float]) -> None:
     """
     The function saves the data to a json file
     :param directory: json file directory
