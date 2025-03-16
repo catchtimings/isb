@@ -7,8 +7,13 @@ def read_txt(directory: str) -> str:
     :param directory: file directory
     :return: string with text
     """
-    with open(directory, mode="r", encoding="utf-8") as file:
-        return file.read()
+    try:
+        with open(directory, mode="r", encoding="utf-8") as file:
+            return file.read()
+    except FileNotFoundError as fne:
+        raise FileNotFoundError(f"File was not found: {fne}")
+    except Exception as e:
+        raise Exception(f"An error occurred when opening the file: {e}")
 
 
 def save_txt(directory: str, data: str) -> None:
@@ -18,8 +23,11 @@ def save_txt(directory: str, data: str) -> None:
     :param data: data that will be written to the file
     :return: None
     """
-    with open(directory, mode="w", encoding="utf-8") as file:
-        file.write(data)
+    try:
+        with open(directory, mode="w", encoding="utf-8") as file:
+            file.write(data)
+    except Exception as e:
+        raise Exception(f"An error occurred when saving the file: {e}")
 
 
 def read_json(directory: str) -> dict[str, str]:
@@ -28,16 +36,26 @@ def read_json(directory: str) -> dict[str, str]:
     :param directory: json file directory
     :return: key as a dictionary
     """
-    with open(directory, mode="r", encoding="utf-8") as file:
-        return json.load(file)
+    try:
+        with open(directory, mode="r", encoding="utf-8") as file:
+            return json.load(file)
+    except FileNotFoundError as fne:
+        raise FileNotFoundError(f"File was not found: {fne}")
+    except json.JSONDecodeError as jde:
+        raise ValueError(f"Error decoding the json file: {jde}")
+    except Exception as e:
+        raise Exception(f"An error occurred when opening the file {e}")
 
 
-def save_json(directory: str, data: dict[str, float]) -> None:
+def save_json(directory: str, data: dict[str, str]) -> None:
     """
     The function saves the data to a json file
     :param directory: json file directory
     :param data: data that will be written to the file
     :return:
     """
-    with open(directory, mode="w", encoding="utf-8") as file:
-        json.dump(data, file, ensure_ascii=False)
+    try:
+        with open(directory, mode="w", encoding="utf-8") as file:
+            json.dump(data, file, ensure_ascii=False)
+    except Exception as e:
+        raise Exception(f"An error occurred when saving the file: {e}")
