@@ -4,11 +4,16 @@ def make_dict_upper(data: dict[str, str]) -> dict[str, str]:
     :param data: dictionary to make changes to
     :return: dictionary with keys and values in uppercase
     """
-    result = dict()
-    for key, value in data.items():
-        result[key.upper()] = value.upper()
+    try:
+        result = dict()
+        for key, value in data.items():
+            result[key.upper()] = value.upper()
 
-    return result
+        return result
+    except AttributeError as ae:
+        raise AttributeError(f"Keys and values must be string: {ae}")
+    except Exception as e:
+        raise Exception(f"Error during making keys and values in uppercase: {e}")
 
 
 def text_encryption(data: str, key: dict[str, str]) -> str:

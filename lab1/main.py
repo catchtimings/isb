@@ -1,4 +1,5 @@
 from file_work import read_json, read_txt, save_json, save_txt
+from lab1.task1.text_encryption import make_dict_upper
 from task1.text_encryption import text_encryption
 from task2.frequency_analysis import frequency_count, sort_dict
 
@@ -21,7 +22,7 @@ def main():
         decrypted_text = text_encryption(cod25, key_cod25)
         save_txt(TASK2_FILES["decrypted_text"], decrypted_text)
     except Exception as e:
-        print(f"Error! {e}")
+        print(e)
 
 
 if __name__ == "__main__":
