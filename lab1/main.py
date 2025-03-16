@@ -1,5 +1,4 @@
 from file_work import read_json, read_txt, save_json, save_txt
-from lab1.task1.text_encryption import make_dict_upper
 from task1.text_encryption import text_encryption
 from task2.frequency_analysis import frequency_count, sort_dict
 
