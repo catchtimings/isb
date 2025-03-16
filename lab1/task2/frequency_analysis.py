@@ -16,19 +16,14 @@ def frequency_count(data: str) -> dict[str, float]:
     return result
 
 
-def sort_dict(data: dict[str, str]) -> dict[str, str]:
+def sort_dict(data: dict[str, str], reverse_flag: bool) -> dict[str, str]:
     """
-    The function sorts dictionary by values
+    The function sorts the dictionary by values in descending order
     :param data: dictionary to sort
+    :param reverse_flag: sorting order
     :return: sorted dictionary
     """
-    result = dict()
-    data = sorted(data.items(), key=lambda item: item[1], reverse=True)
-
-    for item in data:
-        result[item[0]] = item[1]
-
-    return result
+    return dict(sorted(data.items(), key=lambda item: item[1], reverse=reverse_flag))
 
 
 def find_key(data: str, frequency: dict[str, float]) -> dict[str, str]:
@@ -39,8 +34,8 @@ def find_key(data: str, frequency: dict[str, float]) -> dict[str, str]:
     :return: the key is in the form of a dictionary
     """
     result = dict()
-    frequency_data = sort_dict(frequency_count(data))
-    frequency = sort_dict(frequency)
+    frequency_data = sort_dict(frequency_count(data), True)
+    frequency = sort_dict(frequency, True)
 
     for cod25_key, absolute_key in zip(frequency_data.keys(), frequency.keys()):
         result[cod25_key] = absolute_key
