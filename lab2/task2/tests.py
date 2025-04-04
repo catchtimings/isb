@@ -30,12 +30,10 @@ def equally_consecutive_bits(data: str) -> float:
 
     v_n = 0
     for i in range(seq_len - 1):
-        if data[i] == data[i + 1]:
-            v_n += 0
-        else:
+        if data[i] != data[i + 1]:
             v_n += 1
 
-    numerator = v_n - 2 * seq_len * (1 - zeta)
+    numerator = abs(v_n - 2 * seq_len * zeta * (1 - zeta))
     denominator = 2 * math.sqrt(2 * seq_len) * zeta * (1 - zeta)
     p_value = math.erfc(abs(numerator) / denominator)
     return p_value
@@ -60,6 +58,7 @@ def longest_sequence_test(data: str) -> float:
                 mx_length = max(mx_length, curr_length)
             else:
                 curr_length = 0
+
         match mx_length:
             case mx_length if mx_length <= 1:
                 v[0] += 1
@@ -71,6 +70,6 @@ def longest_sequence_test(data: str) -> float:
                 v[3] += 1
 
     p = [0.2148, 0.3672, 0.2305, 0.1875]
-    xi_square = sum((v[i] - 16 * p[i]) ** 2 / (16 * p[i]) for i in range(len(v)))
+    xi_square = sum(((v[i] - 16 * p[i]) ** 2) / (16 * p[i]) for i in range(len(v)))
     p_value = special.gammainc((3 / 2), (xi_square / 2))
     return p_value
