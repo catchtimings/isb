@@ -1,12 +1,24 @@
 import math
 
 def frequency_bit_test(data: str) -> float:
+    """
+    The function checks if sequence is random
+    using frequency bit test
+    :param data: sequence
+    :return: result
+    """
     s_n = (data.count("1") - data.count("0")) / math.sqrt(len(data))
     p_value = math.erfc(abs(s_n) / math.sqrt(2))
     return p_value
 
 
 def equally_consecutive_bits(data: str) -> float:
+    """
+    The function checks if sequence is random
+    using a test for identical consecutive bits
+    :param data: sequence
+    :return: result
+    """
     seq_len = len(data)
     zeta = data.count("1") / seq_len
 
@@ -24,3 +36,6 @@ def equally_consecutive_bits(data: str) -> float:
     denominator = 2 * math.sqrt(2 * seq_len) * zeta * (1 - zeta)
     p_value = math.erfc(abs(numerator) / denominator)
     return p_value
+
+
+def longest_sequence_test(data: str)
