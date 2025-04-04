@@ -2,6 +2,11 @@ import json
 
 
 def read_data(directory: str) -> str | dict[str, str]:
+    """
+    The function reads data from json and txt file
+    :param directory: path to file
+    :return: data from file
+    """
     try:
         with open(directory, mode="r", encoding="utf-8") as file:
             if directory.endswith(".json"):
@@ -14,3 +19,20 @@ def read_data(directory: str) -> str | dict[str, str]:
         raise ValueError(f"Error decoding the json file: {jde}")
     except Exception as e:
         raise Exception(f"An error occurred when opening the file {e}")
+
+
+def save_data(directory: str, data: str | dict) -> None:
+    """
+    The function save data to txt or json file
+    :param directory: path to file
+    :param data: data that needs to be saved
+    :return: None
+    """
+    try:
+        with open(directory, mode="w", encoding="utf-8") as file:
+            if directory.endswith(".json"):
+                json.dump(data, file, ensure_ascii=False, indent=4)
+            else:
+                file.write(data)
+    except Exception as e:
+        raise Exception(f"An error occurred when saving the file: {e}")
