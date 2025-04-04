@@ -26,13 +26,10 @@ def tests_sequence(directory: str) -> dict[str, float]:
     :return: result as dictionary
     """
     sequence = read_data(directory)
-    freq_bit_test = frequency_bit_test(sequence)
-    eq_consecutive_bits = equally_consecutive_bits(sequence)
-    longest_seq_test = longest_sequence_test(sequence)
     return {
-        "frequency_bit_test": freq_bit_test,
-        "equally_consecutive_bits": eq_consecutive_bits,
-        "longest_sequence_test": longest_seq_test,
+        "frequency_bit_test": frequency_bit_test(sequence),
+        "equally_consecutive_bits": equally_consecutive_bits(sequence),
+        "longest_sequence_test": longest_sequence_test(sequence),
     }
 
 
