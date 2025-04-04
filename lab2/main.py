@@ -1,38 +1,52 @@
 import argparse
 
 
-from file_work import read_data
-from lab2.task2.tests import equally_consecutive_bits
-from task2.tests import frequency_bit_test
+from file_work import read_data, save_data
+from task2.tests import (
+    frequency_bit_test,
+    equally_consecutive_bits,
+    longest_sequence_test,
+)
 
 
 def get_arguments() -> str:
+    """
+    The function parses directory to json file with settings
+    :return: path to json file
+    """
     parser = argparse.ArgumentParser()
     parser.add_argument("json_file", type=str, help="directory to json file")
     return parser.parse_args().json_file
 
 
-def tests_cpp_sequence(directory: str) -> None:
-    cpp_sequence = read_data(directory)
-    freq_bit_test = frequency_bit_test(cpp_sequence)
-    eq_consecutive_bits = equally_consecutive_bits(cpp_sequence)
-    print(freq_bit_test)
-    print(eq_consecutive_bits)
-
-
-def test_java_sequence(directory: str) -> None:
-    java_sequence = read_data(directory)
-    freq_bit_test = frequency_bit_test(java_sequence)
-    eq_consecutive_bits = equally_consecutive_bits(java_sequence)
-    print(freq_bit_test)
-    print(eq_consecutive_bits)
+def tests_sequence(directory: str) -> dict[str, float]:
+    """
+    The function performs all tests on the sequence
+    :param directory: sequence
+    :return: result as dictionary
+    """
+    sequence = read_data(directory)
+    freq_bit_test = frequency_bit_test(sequence)
+    eq_consecutive_bits = equally_consecutive_bits(sequence)
+    longest_seq_test = longest_sequence_test(sequence)
+    return {
+        "frequency_bit_test": freq_bit_test,
+        "equally_consecutive_bits": eq_consecutive_bits,
+        "longest_sequence_test": longest_seq_test,
+    }
 
 
 def main():
     try:
         config = read_data(get_arguments())
-        tests_cpp_sequence(config["cpp_seq"])
-        test_java_sequence(config["java_seq"])
+        cpp_sequence_stats = {
+            "cpp_sequence_stats": tests_sequence(config["cpp_seq"])
+        }
+        java_sequence_stats = {
+            "java_sequence_stats": tests_sequence(config["java_seq"])
+        }
+        stats = {**cpp_sequence_stats, **java_sequence_stats}
+        save_data(config["stats"], stats)
     except Exception as e:
         print(e)
 
