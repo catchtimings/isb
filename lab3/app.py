@@ -10,7 +10,7 @@ from PyQt6.QtWidgets import (
     QPushButton,
     QDialog,
     QFileDialog,
-    QMessageBox
+    QMessageBox,
 )
 
 from filehandler import FileHandler
@@ -81,6 +81,7 @@ class MainWindow(QMainWindow):
             )
             if file:
                 self.settings = FileHandler.read_data(file, "r")
+                self.show_message("Success", "Settings loaded", IconTypes.Information)
                 if not QtCore.QFile.exists(file):
                     self.show_message("Error!", "File not found", IconTypes.Critical)
             else:
@@ -91,7 +92,7 @@ class MainWindow(QMainWindow):
             self.show_message(
                 "Error!",
                 f"An error occurred while opening the file: {e}",
-                IconTypes.Critical
+                IconTypes.Critical,
             )
 
     def show_message(self, title: str, text: str, icon_type: IconTypes):
@@ -113,6 +114,11 @@ class MainWindow(QMainWindow):
 
     def generation_key(self):
         try:
+            if not self.settings:
+                self.show_message(
+                    "Settings was not found", "Load settings first", IconTypes.Warning
+                )
+                return
             self.dialog = SelectLength()
             self.dialog.exec()
             key_length = self.dialog.key_length
@@ -120,7 +126,7 @@ class MainWindow(QMainWindow):
                 self.settings["symmetric_key"],
                 self.settings["public_key"],
                 self.settings["private_key"],
-                key_length
+                key_length,
             )
             self.show_message(
                 "Success", "Keys were saved to files", IconTypes.Information
@@ -130,7 +136,7 @@ class MainWindow(QMainWindow):
             self.show_message(
                 "Error!",
                 f"An error occurred when generating keys: {e}",
-                IconTypes.Critical
+                IconTypes.Critical,
             )
 
 

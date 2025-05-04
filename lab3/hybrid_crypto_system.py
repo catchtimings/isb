@@ -41,6 +41,8 @@ class HybridCryptoSystem:
             format=serialization.PublicFormat.SubjectPublicKeyInfo,
         )
 
-        FileHandler.save_data(encrypted_symmetric_key_dir, encrypted_symmetric_key, "wb")
+        FileHandler.save_data(
+            encrypted_symmetric_key_dir, encrypted_symmetric_key, "wb"
+        )
         FileHandler.save_data(private_key_dir, private_key_pem, "wb")
         FileHandler.save_data(public_key_dir, public_key_pem, "wb")
