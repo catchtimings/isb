@@ -1,0 +1,5 @@
+{
+  "symmetric_key" : "keys/symmetric_key.txt",
+  "public_key" : "keys/public_key.txt",
+  "private_key" : "keys/private_key.txt"
+}
