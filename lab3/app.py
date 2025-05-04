@@ -28,9 +28,9 @@ class SelectLength(QDialog):
         self.button128 = QPushButton("128 bit")
         self.button256 = QPushButton("256 bit")
 
-        self.button64.setStyleSheet("height: 130px;")
-        self.button128.setStyleSheet("height: 130px;")
-        self.button256.setStyleSheet("height: 130px;")
+        self.button64.setStyleSheet("height: 130px; font-size: 18px;")
+        self.button128.setStyleSheet("height: 130px; font-size: 18px;")
+        self.button256.setStyleSheet("height: 130px; font-size: 18px;")
 
         layout = QHBoxLayout()
         layout.addWidget(self.button64)
@@ -59,8 +59,8 @@ class MainWindow(QMainWindow):
         self.open_settings_button = QPushButton("Open settings file")
         self.generator_button = QPushButton("Generate keys")
 
-        self.open_settings_button.setStyleSheet("height: 130px;")
-        self.generator_button.setStyleSheet("height: 130px;")
+        self.open_settings_button.setStyleSheet("height: 130px; font-size: 18px;")
+        self.generator_button.setStyleSheet("height: 130px; font-size: 18px;")
 
         self.open_settings_button.clicked.connect(self.open_settings)
         self.generator_button.clicked.connect(self.generation_key)
@@ -99,6 +99,7 @@ class MainWindow(QMainWindow):
 
     def show_message(self, title: str, text: str, icon_type: IconTypes):
         msg = QMessageBox()
+        msg.setStyleSheet("font-size: 14px;")
         msg.setWindowTitle(title)
         msg.setText(text)
         icon = QMessageBox.Icon.NoIcon
