@@ -15,7 +15,7 @@ from PyQt6.QtWidgets import (
 
 from filehandler import FileHandler
 from hybrid_crypto_system import HybridCryptoSystem
-from constant import DEFAULT_DIRECTORY, IconTypes
+from constant import DEFAULT_DIRECTORY, FILTER, IconTypes
 
 
 class SelectLength(QDialog):
@@ -77,11 +77,13 @@ class MainWindow(QMainWindow):
                 parent=QApplication.activeWindow(),
                 caption="Select json file with settings",
                 directory=DEFAULT_DIRECTORY,
-                filter="JSON Files (*.json)",
+                filter=FILTER,
             )
             if file:
                 self.settings = FileHandler.read_data(file, "r")
-                self.show_message("Success", "Settings loaded", IconTypes.Information)
+                self.show_message(
+                    "Success", "Settings have been loaded", IconTypes.Information
+                )
                 if not QtCore.QFile.exists(file):
                     self.show_message("Error!", "File not found", IconTypes.Critical)
             else:
