@@ -76,7 +76,7 @@ class HybridCryptoSystem:
             encrypted_symmetric_key, private_key
         )
 
-        padder = padding.ANSIX923(self.__key_length).padder()
+        padder = padding.ANSIX923(64).padder()
         padded_text = padder.update(plain_text) + padder.finalize()
 
         iv = os.urandom(8)
@@ -119,7 +119,7 @@ class HybridCryptoSystem:
         decryptor = cipher.decryptor()
         padded_text = decryptor.update(text) + decryptor.finalize()
 
-        unpadder = padding.ANSIX923(self.__key_length).unpadder()
+        unpadder = padding.ANSIX923(64).unpadder()
         decrypted_text = unpadder.update(padded_text) + unpadder.finalize()
 
         FileHandler.save_data(decrypted_text_dir, decrypted_text, "wb")
