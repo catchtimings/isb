@@ -88,9 +88,9 @@ class MainWindow(QMainWindow):
         layout.addWidget(self.decrypt_button)
         self.setCentralWidget(container)
 
-        self.crypto_system = None
+        self.__crypto_system = None
         self.__settings = None
-        self.dialog = None
+        self.__dialog = None
 
     def show_message(self, title: str, text: str, icon_type: IconTypes):
         """Message output for the user"""
@@ -114,9 +114,9 @@ class MainWindow(QMainWindow):
 
     def select_key_length(self):
         """Launch a dialog box to select the key length"""
-        self.dialog = SelectLength()
-        self.dialog.exec()
-        self.crypto_system = HybridCryptoSystem(self.dialog.get_key_length())
+        self.__dialog = SelectLength()
+        self.__dialog.exec()
+        self.__crypto_system = HybridCryptoSystem(self.__dialog.get_key_length())
 
     def open_settings(self):
         """Upload the settings file"""
@@ -152,13 +152,13 @@ class MainWindow(QMainWindow):
                 "Settings was not found", "Load settings first", IconTypes.Warning
             )
             return
-        if not self.crypto_system:
+        if not self.__crypto_system:
             self.show_message(
                 "Key length not found", "Select key length first", IconTypes.Warning
             )
             return
         try:
-            self.crypto_system.generate_keys(
+            self.__crypto_system.generate_keys(
                 self.__settings["symmetric_key"],
                 self.__settings["public_key"],
                 self.__settings["private_key"],
@@ -180,10 +180,10 @@ class MainWindow(QMainWindow):
                 "Settings was not found", "Load settings first", IconTypes.Warning
             )
             return
-        if not self.crypto_system:
-            self.crypto_system = HybridCryptoSystem()
+        if not self.__crypto_system:
+            self.__crypto_system = HybridCryptoSystem()
         try:
-            self.crypto_system.encrypt_data(
+            self.__crypto_system.encrypt_data(
                 self.__settings["plain_text"],
                 self.__settings["private_key"],
                 self.__settings["symmetric_key"],
@@ -208,10 +208,10 @@ class MainWindow(QMainWindow):
                 "Settings was not found", "Load settings first", IconTypes.Warning
             )
             return
-        if not self.crypto_system:
-            self.crypto_system = HybridCryptoSystem()
+        if not self.__crypto_system:
+            self.__crypto_system = HybridCryptoSystem()
         try:
-            self.crypto_system.decrypt_data(
+            self.__crypto_system.decrypt_data(
                 self.__settings["encrypted_text"],
                 self.__settings["private_key"],
                 self.__settings["symmetric_key"],
