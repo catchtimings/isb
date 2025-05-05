@@ -40,7 +40,7 @@ class HybridCryptoSystem:
         s_public_key = self.__serialization_rsa_key(public_key, "public")
 
         encrypted_symmetric_key = self.__encrypt_symmetric_key(
-            public_key, symmetric_key
+            symmetric_key, public_key
         )
 
         FileHandler.save_data(
