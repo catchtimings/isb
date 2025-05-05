@@ -5,8 +5,8 @@ FILTER = "JSON Files (*.json)"
 
 
 class IconTypes(Enum):
-    Critical = ("critical",)
-    Warning = ("warning",)
-    Question = ("question",)
-    Information = ("information",)
+    Critical = "critical",
+    Warning = "warning",
+    Question = "question",
+    Information = "information",
     NoIcon = ""

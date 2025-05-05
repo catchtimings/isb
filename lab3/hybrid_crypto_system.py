@@ -7,15 +7,16 @@ from filehandler import FileHandler
 
 
 class HybridCryptoSystem:
-    @classmethod
+    def __init__(self, length = 128):
+        self.key_length = length
+
     def generate_keys(
         self,
         encrypted_symmetric_key_dir: str,
         public_key_dir: str,
         private_key_dir: str,
-        key_length: int,
     ):
-        symmetric_key = os.urandom(key_length // 8)
+        symmetric_key = os.urandom(self.key_length // 8)
 
         keys = rsa.generate_private_key(public_exponent=65537, key_size=2048)
         private_key = keys

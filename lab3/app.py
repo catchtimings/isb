@@ -42,11 +42,14 @@ class SelectLength(QDialog):
         self.button128.clicked.connect(lambda: self.select_length(128))
         self.button256.clicked.connect(lambda: self.select_length(256))
 
-        self.key_length = None
+        self.__key_length = None
 
     def select_length(self, length):
-        self.key_length = length
+        self.__key_length = length
         self.accept()
+
+    def get_key_length(self):
+        return self.__key_length
 
 
 class MainWindow(QMainWindow):
@@ -63,11 +66,12 @@ class MainWindow(QMainWindow):
         self.generator_button.setStyleSheet("height: 130px; font-size: 18px;")
 
         self.open_settings_button.clicked.connect(self.open_settings)
-        self.generator_button.clicked.connect(self.generation_key)
+        self.generator_button.clicked.connect(self.generate_keys)
         layout.addWidget(self.open_settings_button)
         layout.addWidget(self.generator_button)
         self.setCentralWidget(container)
 
+        self.crypto_system = None
         self.settings = None
         self.dialog = None
 
@@ -85,14 +89,14 @@ class MainWindow(QMainWindow):
                     "Success", "Settings have been loaded", IconTypes.Information
                 )
                 if not QtCore.QFile.exists(file):
-                    self.show_message("Error!", "File not found", IconTypes.Critical)
+                    self.show_message("Error", "File not found", IconTypes.Critical)
             else:
                 self.show_message(
                     "Error", "Please select a valid json file", IconTypes.Critical
                 )
         except Exception as e:
             self.show_message(
-                "Error!",
+                "Error",
                 f"An error occurred while opening the file: {e}",
                 IconTypes.Critical,
             )
@@ -102,7 +106,6 @@ class MainWindow(QMainWindow):
         msg.setStyleSheet("font-size: 14px;")
         msg.setWindowTitle(title)
         msg.setText(text)
-        icon = QMessageBox.Icon.NoIcon
         match icon_type:
             case IconTypes.Critical:
                 icon = QMessageBox.Icon.Critical
@@ -112,30 +115,30 @@ class MainWindow(QMainWindow):
                 icon = QMessageBox.Icon.Information
             case IconTypes.Question:
                 icon = QMessageBox.Icon.Question
+            case _:
+                icon = QMessageBox.Icon.NoIcon
         msg.setIcon(icon)
         msg.exec()
 
-    def generation_key(self):
+    def generate_keys(self):
+        if not self.settings:
+            self.show_message(
+                "Settings was not found", "Load settings first", IconTypes.Warning
+            )
+            return
         try:
-            if not self.settings:
-                self.show_message(
-                    "Settings was not found", "Load settings first", IconTypes.Warning
-                )
-                return
             self.dialog = SelectLength()
             self.dialog.exec()
-            key_length = self.dialog.key_length
-            HybridCryptoSystem.generate_keys(
+            self.crypto_system = HybridCryptoSystem(self.dialog.get_key_length())
+            self.crypto_system.generate_keys(
                 self.settings["symmetric_key"],
                 self.settings["public_key"],
                 self.settings["private_key"],
-                key_length,
             )
             self.show_message(
                 "Success", "Keys were saved to files", IconTypes.Information
             )
         except Exception as e:
-            print(e)
             self.show_message(
                 "Error!",
                 f"An error occurred when generating keys: {e}",
