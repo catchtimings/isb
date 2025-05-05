@@ -1,5 +1,4 @@
 import os
-from pydoc import plain
 
 from cryptography.hazmat.primitives import hashes, serialization, padding
 from cryptography.hazmat.primitives.asymmetric import rsa, padding as asymmetric_padding
@@ -29,22 +28,11 @@ class HybridCryptoSystem:
             public_key, symmetric_key
         )
 
-        private_key_pem = private_key.private_bytes(
-            encoding=serialization.Encoding.PEM,
-            format=serialization.PrivateFormat.PKCS8,
-            encryption_algorithm=serialization.NoEncryption(),
-        )
-
-        public_key_pem = public_key.public_bytes(
-            encoding=serialization.Encoding.PEM,
-            format=serialization.PublicFormat.SubjectPublicKeyInfo,
-        )
-
         FileHandler.save_data(
             encrypted_symmetric_key_dir, encrypted_symmetric_key, "wb"
         )
-        FileHandler.save_data(private_key_dir, private_key_pem, "wb")
-        FileHandler.save_data(public_key_dir, public_key_pem, "wb")
+        self.__serialization_rsa_key(private_key_dir, private_key, "private")
+        self.__serialization_rsa_key(public_key_dir, public_key, "public")
 
     def encrypt_data(
         self,
@@ -60,7 +48,7 @@ class HybridCryptoSystem:
         if not (encrypted_symmetric_key := FileHandler.read_data(encrypted_symmetric_key_dir, "rb")):
             raise ValueError("Encrypted symmetric key must not be empty")
 
-        private_key = serialization.load_pem_private_key(private_bytes, password=None)
+        private_key = self.__deserialization_rsa_key(private_bytes, "private")
         symmetric_key = self.__decrypt_symmetric_key(encrypted_symmetric_key, private_key)
 
         padder = padding.ANSIX923(self.__key_length).padder()
@@ -72,6 +60,29 @@ class HybridCryptoSystem:
         encrypted_text = encryptor.update(padded_text) + encryptor.finalize()
 
         FileHandler.save_data(encrypted_data_dir, encrypted_text, "wb")
+
+    def __serialization_rsa_key(self, key_dir, key, key_type):
+        match key_type:
+            case "private":
+                private_key_pem = key.private_bytes(
+                    encoding=serialization.Encoding.PEM,
+                    format=serialization.PrivateFormat.TraditionalOpenSSL,
+                    encryption_algorithm=serialization.NoEncryption()
+                )
+                FileHandler.save_data(key_dir, private_key_pem, "wb")
+            case "public":
+                public_key_pem = key.public_bytes(
+                    encoding=serialization.Encoding.PEM,
+                    format=serialization.PublicFormat.SubjectPublicKeyInfo,
+                )
+                FileHandler.save_data(key_dir, public_key_pem, "wb")
+
+    def __deserialization_rsa_key(self, key, key_type):
+        match key_type:
+            case "private":
+                return serialization.load_pem_private_key(key, password=None)
+            case "public":
+                return serialization.load_pem_public_key(key)
 
     def __encrypt_symmetric_key(self, public_key, symmetric_key):
         return public_key.encrypt(
