@@ -10,6 +10,7 @@ from filehandler import FileHandler
 
 class HybridCryptoSystem:
     """Hybrid CryptoSystem class"""
+
     def __init__(self, length=128):
         """
         Initializing the system
