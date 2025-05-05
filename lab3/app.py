@@ -13,9 +13,9 @@ from PyQt6.QtWidgets import (
     QMessageBox,
 )
 
+from constant import DEFAULT_DIRECTORY, FILTER, IconTypes
 from filehandler import FileHandler
 from hybrid_crypto_system import HybridCryptoSystem
-from constant import DEFAULT_DIRECTORY, FILTER, IconTypes
 
 
 class SelectLength(QDialog):
@@ -61,45 +61,23 @@ class MainWindow(QMainWindow):
 
         self.open_settings_button = QPushButton("Open settings file")
         self.generator_button = QPushButton("Generate keys")
+        self.encrypt_button = QPushButton("Encrypt data")
 
         self.open_settings_button.setStyleSheet("height: 130px; font-size: 18px;")
         self.generator_button.setStyleSheet("height: 130px; font-size: 18px;")
+        self.encrypt_button.setStyleSheet("height: 130px; font-size: 18px;")
 
         self.open_settings_button.clicked.connect(self.open_settings)
         self.generator_button.clicked.connect(self.generate_keys)
+        self.encrypt_button.clicked.connect(self.encrypt_data)
         layout.addWidget(self.open_settings_button)
         layout.addWidget(self.generator_button)
+        layout.addWidget(self.encrypt_button)
         self.setCentralWidget(container)
 
         self.crypto_system = None
-        self.settings = None
+        self.__settings = None
         self.dialog = None
-
-    def open_settings(self):
-        try:
-            file, _ = QFileDialog.getOpenFileName(
-                parent=QApplication.activeWindow(),
-                caption="Select json file with settings",
-                directory=DEFAULT_DIRECTORY,
-                filter=FILTER,
-            )
-            if file:
-                self.settings = FileHandler.read_data(file, "r")
-                self.show_message(
-                    "Success", "Settings have been loaded", IconTypes.Information
-                )
-                if not QtCore.QFile.exists(file):
-                    self.show_message("Error", "File not found", IconTypes.Critical)
-            else:
-                self.show_message(
-                    "Error", "Please select a valid json file", IconTypes.Critical
-                )
-        except Exception as e:
-            self.show_message(
-                "Error",
-                f"An error occurred while opening the file: {e}",
-                IconTypes.Critical,
-            )
 
     def show_message(self, title: str, text: str, icon_type: IconTypes):
         msg = QMessageBox()
@@ -120,20 +98,50 @@ class MainWindow(QMainWindow):
         msg.setIcon(icon)
         msg.exec()
 
+    def select_key_length(self):
+        self.dialog = SelectLength()
+        self.dialog.exec()
+
+    def open_settings(self):
+        try:
+            file, _ = QFileDialog.getOpenFileName(
+                parent=QApplication.activeWindow(),
+                caption="Select json file with settings",
+                directory=DEFAULT_DIRECTORY,
+                filter=FILTER,
+            )
+            if file:
+                self.__settings = FileHandler.read_data(file, "r")
+                self.show_message(
+                    "Success", "Settings have been loaded", IconTypes.Information
+                )
+                if not QtCore.QFile.exists(file):
+                    self.show_message("Error", "File not found", IconTypes.Critical)
+            else:
+                self.show_message(
+                    "Error", "Please select a valid json file", IconTypes.Critical
+                )
+        except Exception as e:
+            self.show_message(
+                "Error",
+                f"An error occurred while opening the file: {e}",
+                IconTypes.Critical,
+            )
+
     def generate_keys(self):
-        if not self.settings:
+        if not self.__settings:
             self.show_message(
                 "Settings was not found", "Load settings first", IconTypes.Warning
             )
             return
-        try:
-            self.dialog = SelectLength()
-            self.dialog.exec()
+        if not self.crypto_system:
+            self.select_key_length()
             self.crypto_system = HybridCryptoSystem(self.dialog.get_key_length())
+        try:
             self.crypto_system.generate_keys(
-                self.settings["symmetric_key"],
-                self.settings["public_key"],
-                self.settings["private_key"],
+                self.__settings["symmetric_key"],
+                self.__settings["public_key"],
+                self.__settings["private_key"],
             )
             self.show_message(
                 "Success", "Keys were saved to files", IconTypes.Information
@@ -142,6 +150,33 @@ class MainWindow(QMainWindow):
             self.show_message(
                 "Error!",
                 f"An error occurred when generating keys: {e}",
+                IconTypes.Critical,
+            )
+
+    def encrypt_data(self):
+        if not self.__settings:
+            self.show_message(
+                "Settings was not found", "Load settings first", IconTypes.Warning
+            )
+            return
+        if not self.crypto_system:
+            self.crypto_system = HybridCryptoSystem()
+        try:
+            self.crypto_system.encrypt_data(
+                self.__settings["plain_text"],
+                self.__settings["private_key"],
+                self.__settings["symmetric_key"],
+                self.__settings["encrypted_text"],
+            )
+            self.show_message("Success", "Data was encrypted", IconTypes.Information)
+        except ValueError as ve:
+            self.show_message(
+                "Error", f"Something wrong in data: {ve}", IconTypes.Critical
+            )
+        except Exception as e:
+            self.show_message(
+                "Error",
+                f"An error occurred while encrypting the data: {e}",
                 IconTypes.Critical,
             )
 
