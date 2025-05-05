@@ -3,5 +3,6 @@
   "public_key" : "keys/public_key.txt",
   "private_key" : "keys/private_key.txt",
   "plain_text" : "data/plain_text.txt",
-  "encrypted_text" : "data/encrypted_text.txt"
+  "encrypted_text" : "data/encrypted_text.txt",
+  "decrypted_text" : "data/decrypted_text.txt"
 }

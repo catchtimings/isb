@@ -59,7 +59,35 @@ class HybridCryptoSystem:
         encryptor = cipher.encryptor()
         encrypted_text = encryptor.update(padded_text) + encryptor.finalize()
 
-        FileHandler.save_data(encrypted_data_dir, encrypted_text, "wb")
+        FileHandler.save_data(encrypted_data_dir, encrypted_text+iv, "wb")
+
+    def decrypt_data(
+            self,
+            encrypted_text_dir,
+            private_key_dir,
+            encrypted_symmetric_key_dir,
+            decrypted_text_dir
+    ):
+        if not (encrypted_text := FileHandler.read_data(encrypted_text_dir, "rb")):
+            raise ValueError("Text file must not be empty")
+        if not (private_bytes := FileHandler.read_data(private_key_dir, "rb")):
+            raise ValueError("Private key must not be empty")
+        if not (encrypted_symmetric_key := FileHandler.read_data(encrypted_symmetric_key_dir, "rb")):
+            raise ValueError("Encrypted symmetric key must not be empty")
+
+        private_key = self.__deserialization_rsa_key(private_bytes, "private")
+        symmetric_key = self.__decrypt_symmetric_key(encrypted_symmetric_key, private_key)
+
+        iv = encrypted_text[-8:]
+        text = encrypted_text[:-8]
+        cipher = Cipher(TripleDES(symmetric_key), modes.CBC(iv))
+        decryptor = cipher.decryptor()
+        padded_text = decryptor.update(text) + decryptor.finalize()
+
+        unpadder = padding.ANSIX923(self.__key_length).unpadder()
+        decrypted_text = unpadder.update(padded_text) + unpadder.finalize()
+
+        FileHandler.save_data(decrypted_text_dir, decrypted_text, "wb")
 
     def __serialization_rsa_key(self, key_dir, key, key_type):
         match key_type:

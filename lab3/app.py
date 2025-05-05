@@ -63,21 +63,24 @@ class MainWindow(QMainWindow):
         self.select_key_length_button = QPushButton("Select key length")
         self.generator_button = QPushButton("Generate keys")
         self.encrypt_button = QPushButton("Encrypt data")
+        self.decrypt_button = QPushButton("Decrypt data")
 
         self.open_settings_button.setStyleSheet("height: 130px; font-size: 18px;")
         self.select_key_length_button.setStyleSheet("height: 130px; font-size: 18px;")
         self.generator_button.setStyleSheet("height: 130px; font-size: 18px;")
         self.encrypt_button.setStyleSheet("height: 130px; font-size: 18px;")
-
+        self.decrypt_button.setStyleSheet("height: 130px; font-size: 18px;")
 
         self.open_settings_button.clicked.connect(self.open_settings)
         self.select_key_length_button.clicked.connect(self.select_key_length)
         self.generator_button.clicked.connect(self.generate_keys)
         self.encrypt_button.clicked.connect(self.encrypt_data)
+        self.decrypt_button.clicked.connect(self.decrypt_data)
         layout.addWidget(self.open_settings_button)
         layout.addWidget(self.select_key_length_button)
         layout.addWidget(self.generator_button)
         layout.addWidget(self.encrypt_button)
+        layout.addWidget(self.decrypt_button)
         self.setCentralWidget(container)
 
         self.crypto_system = None
@@ -185,6 +188,34 @@ class MainWindow(QMainWindow):
                 f"An error occurred while encrypting the data: {e}",
                 IconTypes.Critical,
             )
+
+    def decrypt_data(self):
+        if not self.__settings:
+            self.show_message(
+                "Settings was not found", "Load settings first", IconTypes.Warning
+            )
+            return
+        if not self.crypto_system:
+            self.crypto_system = HybridCryptoSystem()
+        try:
+            self.crypto_system.decrypt_data(
+                self.__settings["encrypted_text"],
+                self.__settings["private_key"],
+                self.__settings["symmetric_key"],
+                self.__settings["decrypted_text"]
+            )
+            self.show_message("Success", "Data was decrypted", IconTypes.Information)
+        except ValueError as ve:
+            self.show_message(
+                "Error", f"Something wrong in data: {ve}", IconTypes.Critical
+            )
+        except Exception as e:
+            self.show_message(
+                "Error",
+                f"An error occurred while decrypting the data: {e}",
+                IconTypes.Critical,
+            )
+
 
 
 def launch_app():
