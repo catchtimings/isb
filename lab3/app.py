@@ -19,7 +19,9 @@ from hybrid_crypto_system import HybridCryptoSystem
 
 
 class SelectLength(QDialog):
+    """Dialog box with key length selection"""
     def __init__(self):
+        """Initializing the dialog box"""
         super().__init__()
         self.setWindowTitle("Select key length")
         self.setFixedSize(700, 100)
@@ -45,6 +47,7 @@ class SelectLength(QDialog):
         self.__key_length = None
 
     def __select_length(self, length):
+        """Length selection method"""
         self.__key_length = length
         self.accept()
 
@@ -53,7 +56,9 @@ class SelectLength(QDialog):
 
 
 class MainWindow(QMainWindow):
+    """Hybrid Crypto System Application Window"""
     def __init__(self):
+        """Initializing the application window"""
         super().__init__()
         self.setWindowTitle("Hybrid CryptoSystem")
         self.setFixedSize(1280, 320)
@@ -88,6 +93,7 @@ class MainWindow(QMainWindow):
         self.dialog = None
 
     def show_message(self, title: str, text: str, icon_type: IconTypes):
+        """Message output for the user"""
         msg = QMessageBox()
         msg.setStyleSheet("font-size: 14px;")
         msg.setWindowTitle(title)
@@ -107,11 +113,13 @@ class MainWindow(QMainWindow):
         msg.exec()
 
     def select_key_length(self):
+        """Launch a dialog box to select the key length"""
         self.dialog = SelectLength()
         self.dialog.exec()
         self.crypto_system = HybridCryptoSystem(self.dialog.get_key_length())
 
     def open_settings(self):
+        """Upload the settings file"""
         try:
             file, _ = QFileDialog.getOpenFileName(
                 parent=QApplication.activeWindow(),
@@ -138,13 +146,16 @@ class MainWindow(QMainWindow):
             )
 
     def generate_keys(self):
+        """Launch key generation"""
         if not self.__settings:
             self.show_message(
                 "Settings was not found", "Load settings first", IconTypes.Warning
             )
             return
         if not self.crypto_system:
-            self.show_message("Key length not found", "Select key length first", IconTypes.Warning)
+            self.show_message(
+                "Key length not found", "Select key length first", IconTypes.Warning
+            )
             return
         try:
             self.crypto_system.generate_keys(
@@ -163,6 +174,7 @@ class MainWindow(QMainWindow):
             )
 
     def encrypt_data(self):
+        """Launch data encryption"""
         if not self.__settings:
             self.show_message(
                 "Settings was not found", "Load settings first", IconTypes.Warning
@@ -190,6 +202,7 @@ class MainWindow(QMainWindow):
             )
 
     def decrypt_data(self):
+        """Launch data decryption"""
         if not self.__settings:
             self.show_message(
                 "Settings was not found", "Load settings first", IconTypes.Warning
@@ -202,7 +215,7 @@ class MainWindow(QMainWindow):
                 self.__settings["encrypted_text"],
                 self.__settings["private_key"],
                 self.__settings["symmetric_key"],
-                self.__settings["decrypted_text"]
+                self.__settings["decrypted_text"],
             )
             self.show_message("Success", "Data was decrypted", IconTypes.Information)
         except ValueError as ve:
@@ -217,8 +230,7 @@ class MainWindow(QMainWindow):
             )
 
 
-
-def launch_app():
+if __name__ == "__main__":
     app = QApplication(sys.argv)
     window = MainWindow()
     window.show()
