@@ -24,27 +24,27 @@ class SelectLength(QDialog):
         self.setWindowTitle("Select key length")
         self.setFixedSize(700, 100)
 
-        self.button64 = QPushButton("64 bit")
-        self.button128 = QPushButton("128 bit")
-        self.button256 = QPushButton("256 bit")
+        self.button64 = QPushButton("64 bits")
+        self.button128 = QPushButton("128 bits")
+        self.button192 = QPushButton("192 bits")
 
         self.button64.setStyleSheet("height: 130px; font-size: 18px;")
         self.button128.setStyleSheet("height: 130px; font-size: 18px;")
-        self.button256.setStyleSheet("height: 130px; font-size: 18px;")
+        self.button192.setStyleSheet("height: 130px; font-size: 18px;")
 
         layout = QHBoxLayout()
         layout.addWidget(self.button64)
         layout.addWidget(self.button128)
-        layout.addWidget(self.button256)
+        layout.addWidget(self.button192)
         self.setLayout(layout)
 
-        self.button64.clicked.connect(lambda: self.select_length(64))
-        self.button128.clicked.connect(lambda: self.select_length(128))
-        self.button256.clicked.connect(lambda: self.select_length(256))
+        self.button64.clicked.connect(lambda: self.__select_length(64))
+        self.button128.clicked.connect(lambda: self.__select_length(128))
+        self.button192.clicked.connect(lambda: self.__select_length(192))
 
         self.__key_length = None
 
-    def select_length(self, length):
+    def __select_length(self, length):
         self.__key_length = length
         self.accept()
 
@@ -60,17 +60,22 @@ class MainWindow(QMainWindow):
         (container := QWidget()).setLayout(layout := QHBoxLayout())
 
         self.open_settings_button = QPushButton("Open settings file")
+        self.select_key_length_button = QPushButton("Select key length")
         self.generator_button = QPushButton("Generate keys")
         self.encrypt_button = QPushButton("Encrypt data")
 
         self.open_settings_button.setStyleSheet("height: 130px; font-size: 18px;")
+        self.select_key_length_button.setStyleSheet("height: 130px; font-size: 18px;")
         self.generator_button.setStyleSheet("height: 130px; font-size: 18px;")
         self.encrypt_button.setStyleSheet("height: 130px; font-size: 18px;")
 
+
         self.open_settings_button.clicked.connect(self.open_settings)
+        self.select_key_length_button.clicked.connect(self.select_key_length)
         self.generator_button.clicked.connect(self.generate_keys)
         self.encrypt_button.clicked.connect(self.encrypt_data)
         layout.addWidget(self.open_settings_button)
+        layout.addWidget(self.select_key_length_button)
         layout.addWidget(self.generator_button)
         layout.addWidget(self.encrypt_button)
         self.setCentralWidget(container)
@@ -101,6 +106,7 @@ class MainWindow(QMainWindow):
     def select_key_length(self):
         self.dialog = SelectLength()
         self.dialog.exec()
+        self.crypto_system = HybridCryptoSystem(self.dialog.get_key_length())
 
     def open_settings(self):
         try:
@@ -135,8 +141,8 @@ class MainWindow(QMainWindow):
             )
             return
         if not self.crypto_system:
-            self.select_key_length()
-            self.crypto_system = HybridCryptoSystem(self.dialog.get_key_length())
+            self.show_message("Key length not found", "Select key length first", IconTypes.Warning)
+            return
         try:
             self.crypto_system.generate_keys(
                 self.__settings["symmetric_key"],
