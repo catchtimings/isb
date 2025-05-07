@@ -1,4 +1,5 @@
 import sys
+sys.path.append('C:/Users/ct/PycharmProjects/isb/lab3')
 
 from PyQt6 import QtCore
 
@@ -6,6 +7,7 @@ from PyQt6.QtWidgets import (
     QApplication,
     QMainWindow,
     QWidget,
+    QVBoxLayout,
     QHBoxLayout,
     QPushButton,
     QDialog,
@@ -15,7 +17,7 @@ from PyQt6.QtWidgets import (
 
 from constant import DEFAULT_DIRECTORY, FILTER, IconTypes
 from filehandler import FileHandler
-from hybrid_crypto_system import HybridCryptoSystem
+from hybrid_crypto_system.hybrid_crypto_system import HybridCryptoSystem
 
 
 class SelectLength(QDialog):
@@ -62,7 +64,7 @@ class MainWindow(QMainWindow):
         super().__init__()
         self.setWindowTitle("Hybrid CryptoSystem")
         self.setFixedSize(1280, 320)
-        (container := QWidget()).setLayout(layout := QHBoxLayout())
+        (container := QWidget()).setLayout(layout := QVBoxLayout())
 
         self.open_settings_button = QPushButton("Open settings file")
         self.select_key_length_button = QPushButton("Select key length")
@@ -81,11 +83,19 @@ class MainWindow(QMainWindow):
         self.generator_button.clicked.connect(self.generate_keys)
         self.encrypt_button.clicked.connect(self.encrypt_data)
         self.decrypt_button.clicked.connect(self.decrypt_data)
-        layout.addWidget(self.open_settings_button)
-        layout.addWidget(self.select_key_length_button)
-        layout.addWidget(self.generator_button)
-        layout.addWidget(self.encrypt_button)
-        layout.addWidget(self.decrypt_button)
+
+        layout1 = QHBoxLayout()
+        layout2 = QHBoxLayout()
+
+        layout1.addWidget(self.generator_button)
+        layout1.addWidget(self.encrypt_button)
+        layout1.addWidget(self.decrypt_button)
+        layout2.addWidget(self.open_settings_button)
+        layout2.addWidget(self.select_key_length_button)
+
+        layout.addLayout(layout1)
+        layout.addLayout(layout2)
+
         self.setCentralWidget(container)
 
         self.__crypto_system = None
@@ -160,8 +170,8 @@ class MainWindow(QMainWindow):
         try:
             self.__crypto_system.generate_keys(
                 self.__settings["symmetric_key"],
-                self.__settings["public_key"],
                 self.__settings["private_key"],
+                self.__settings["public_key"]
             )
             self.show_message(
                 "Success", "Keys were saved to files", IconTypes.Information
@@ -194,6 +204,7 @@ class MainWindow(QMainWindow):
             self.show_message(
                 "Error", f"Something wrong in data: {ve}", IconTypes.Critical
             )
+            print(ve)
         except Exception as e:
             self.show_message(
                 "Error",
