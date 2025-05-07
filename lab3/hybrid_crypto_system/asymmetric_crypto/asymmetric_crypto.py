@@ -5,6 +5,7 @@ from cryptography.hazmat.primitives.asymmetric import rsa, padding as asymmetric
 
 from hybrid_crypto_system.de_serialization.de_serialization import DeSerialization
 
+
 class AsymmetricCrypto:
     @staticmethod
     def generate_keys(key_length: int):
@@ -22,7 +23,9 @@ class AsymmetricCrypto:
         s_private_key = DeSerialization.serialization_rsa_key(private_key, "private")
         s_public_key = DeSerialization.serialization_rsa_key(public_key, "public")
 
-        encrypted_symmetric_key = AsymmetricCrypto.encrypt_symmetric_key(symmetric_key, public_key)
+        encrypted_symmetric_key = AsymmetricCrypto.encrypt_symmetric_key(
+            symmetric_key, public_key
+        )
 
         return encrypted_symmetric_key, s_private_key, s_public_key
 

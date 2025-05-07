@@ -6,6 +6,7 @@ from hybrid_crypto_system.symmetric_crypto.symmetric_crypto import SymmetricCryp
 
 class HybridCryptoSystem:
     """Hybrid CryptoSystem class"""
+
     def __init__(self, length=192):
         """
         Initializing the system
@@ -14,10 +15,10 @@ class HybridCryptoSystem:
         self.__key_length = length
 
     def generate_keys(
-            self,
-            encrypted_symmetric_key_dir: str,
-            private_key_dir: str,
-            public_key_dir: str
+        self,
+        encrypted_symmetric_key_dir: str,
+        private_key_dir: str,
+        public_key_dir: str,
     ):
         """
         Key generation method
@@ -26,8 +27,12 @@ class HybridCryptoSystem:
         :param private_key_dir: directory to save private asymmetric key
         :return None
         """
-        encrypted_symmetric_key, private_key, public_key = AsymmetricCrypto.generate_keys(self.__key_length)
-        DeSerialization.serialization_data(encrypted_symmetric_key_dir, encrypted_symmetric_key)
+        encrypted_symmetric_key, private_key, public_key = (
+            AsymmetricCrypto.generate_keys(self.__key_length)
+        )
+        DeSerialization.serialization_data(
+            encrypted_symmetric_key_dir, encrypted_symmetric_key
+        )
         DeSerialization.serialization_data(private_key_dir, private_key)
         DeSerialization.serialization_data(public_key_dir, public_key)
 
@@ -50,11 +55,17 @@ class HybridCryptoSystem:
             raise ValueError("Text file must not be empty")
         if not (private_bytes := FileHandler.read_data(private_key_dir, "rb")):
             raise ValueError("Private key must not be empty")
-        if not (encrypted_symmetric_key := FileHandler.read_data(encrypted_symmetric_key_dir, "rb")):
+        if not (
+            encrypted_symmetric_key := FileHandler.read_data(
+                encrypted_symmetric_key_dir, "rb"
+            )
+        ):
             raise ValueError("Encrypted symmetric key must not be empty")
 
-        encrypted_data = SymmetricCrypto.encrypt_data(plain_text, private_bytes, encrypted_symmetric_key)
-        #FileHandler.save_data(encrypted_data_dir, encrypted_data, "wb")
+        encrypted_data = SymmetricCrypto.encrypt_data(
+            plain_text, private_bytes, encrypted_symmetric_key
+        )
+        # FileHandler.save_data(encrypted_data_dir, encrypted_data, "wb")
         DeSerialization.serialization_data(encrypted_data_dir, encrypted_data)
 
     def decrypt_data(
@@ -76,8 +87,14 @@ class HybridCryptoSystem:
             raise ValueError("Text file must not be empty")
         if not (private_bytes := FileHandler.read_data(private_key_dir, "rb")):
             raise ValueError("Private key must not be empty")
-        if not (encrypted_symmetric_key := FileHandler.read_data(encrypted_symmetric_key_dir, "rb")):
+        if not (
+            encrypted_symmetric_key := FileHandler.read_data(
+                encrypted_symmetric_key_dir, "rb"
+            )
+        ):
             raise ValueError("Encrypted symmetric key must not be empty")
 
-        decrypted_data = SymmetricCrypto.decrypt_data(encrypted_text, private_bytes, encrypted_symmetric_key)
+        decrypted_data = SymmetricCrypto.decrypt_data(
+            encrypted_text, private_bytes, encrypted_symmetric_key
+        )
         FileHandler.save_data(decrypted_text_dir, decrypted_data, "wb")

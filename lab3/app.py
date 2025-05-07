@@ -1,5 +1,6 @@
 import sys
-sys.path.append('C:/Users/ct/PycharmProjects/isb/lab3')
+
+sys.path.append("C:/Users/ct/PycharmProjects/isb/lab3")
 
 from PyQt6 import QtCore
 
@@ -22,6 +23,7 @@ from hybrid_crypto_system.hybrid_crypto_system import HybridCryptoSystem
 
 class SelectLength(QDialog):
     """Dialog box with key length selection"""
+
     def __init__(self):
         """Initializing the dialog box"""
         super().__init__()
@@ -59,6 +61,7 @@ class SelectLength(QDialog):
 
 class MainWindow(QMainWindow):
     """Hybrid Crypto System Application Window"""
+
     def __init__(self):
         """Initializing the application window"""
         super().__init__()
@@ -171,7 +174,7 @@ class MainWindow(QMainWindow):
             self.__crypto_system.generate_keys(
                 self.__settings["symmetric_key"],
                 self.__settings["private_key"],
-                self.__settings["public_key"]
+                self.__settings["public_key"],
             )
             self.show_message(
                 "Success", "Keys were saved to files", IconTypes.Information

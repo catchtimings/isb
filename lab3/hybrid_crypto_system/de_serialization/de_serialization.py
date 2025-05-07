@@ -2,10 +2,10 @@ from cryptography.hazmat.primitives import serialization
 
 from filehandler import FileHandler
 
+
 class DeSerialization:
-    def __init__(self):
-        pass
     """Serialization and deserialization operations"""
+
     @staticmethod
     def serialization_rsa_key(key, key_type):
         """
