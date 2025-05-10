@@ -24,12 +24,16 @@ class MainWindow(QMainWindow):
         (container := QWidget()).setLayout(layout := QHBoxLayout())
 
         self.match_card_number_button = QPushButton("Match a card number")
+        self.check_card_number_button = QPushButton("Check card number")
 
-        self.match_card_number_button.setStyleSheet("height: 130px; font-size: 16px;")
+        self.match_card_number_button.setStyleSheet("height: 130px; font-size: 18px;")
+        self.check_card_number_button.setStyleSheet("height: 130px; font-size: 18px;")
 
         self.match_card_number_button.clicked.connect(self.match_card_number)
+        self.check_card_number_button.clicked.connect(self.check_card_number)
 
         layout.addWidget(self.match_card_number_button)
+        layout.addWidget(self.check_card_number_button)
 
         self.setCentralWidget(container)
 
@@ -112,6 +116,18 @@ class MainWindow(QMainWindow):
             self.show_message("Error", f"Something is wrong with data: {ve}", IconTypes.Critical)
         except Exception as e:
             self.show_message("Error", f"An error occurred when trying to select the card number: {e}", IconTypes.Critical)
+
+    def check_card_number(self):
+        try:
+            card_number = FileHandler.read_data(self.select_file("Select json file with card number"), "r")["card_number"]
+            if HashFunctionCollision.check_validate(str(card_number)):
+                self.show_message("Success", "Your card number is correct", IconTypes.Information)
+            else:
+                self.show_message("Fail", "Your card number isn't correct", IconTypes.Information)
+        except ValueError as ve:
+            self.show_message("Error", f"Something is wrong with data: {ve}", IconTypes.Critical)
+        except Exception as e:
+            self.show_message("Error", f"An error occurred when trying to check card number validate: {e}", IconTypes.Critical)
 
 
 if __name__ == "__main__":
