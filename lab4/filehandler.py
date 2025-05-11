@@ -3,7 +3,7 @@ import json
 
 class FileHandler:
     @staticmethod
-    def read_data(directory: str, mode: str):
+    def read_data(directory: str, mode: str = "r"):
         try:
             with open(directory, mode) as file:
                 if directory.endswith(".json"):
@@ -18,7 +18,7 @@ class FileHandler:
             raise Exception(f"An error occurred when opening the file {e}")
 
     @staticmethod
-    def read_data_tuple(directory: str, mode: str):
+    def read_data_tuple(directory: str, mode: str = "r"):
         try:
             with open(directory, mode) as file:
                 if directory.endswith(".json"):
@@ -33,7 +33,7 @@ class FileHandler:
             raise Exception(f"An error occurred when opening the file {e}")
 
     @staticmethod
-    def save_data(directory: str, data: str | dict, mode: str) -> None:
+    def save_data(directory: str, data: str | dict, mode: str = "w") -> None:
         try:
             with open(directory, mode) as file:
                 if directory.endswith(".json"):

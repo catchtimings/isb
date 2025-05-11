@@ -25,15 +25,19 @@ class MainWindow(QMainWindow):
 
         self.match_card_number_button = QPushButton("Match a card number")
         self.check_card_number_button = QPushButton("Check card number")
+        self.measure_time_button = QPushButton("Measure time")
 
         self.match_card_number_button.setStyleSheet("height: 130px; font-size: 18px;")
         self.check_card_number_button.setStyleSheet("height: 130px; font-size: 18px;")
+        self.measure_time_button.setStyleSheet("height: 130px; font-size: 18px;")
 
         self.match_card_number_button.clicked.connect(self.match_card_number)
         self.check_card_number_button.clicked.connect(self.check_card_number)
+        self.measure_time_button.clicked.connect(self.measure_time)
 
         layout.addWidget(self.match_card_number_button)
         layout.addWidget(self.check_card_number_button)
+        layout.addWidget(self.measure_time_button)
 
         self.setCentralWidget(container)
 
@@ -99,17 +103,17 @@ class MainWindow(QMainWindow):
 
     def match_card_number(self):
         try:
-            hash_value = FileHandler.read_data(self.select_file("Select file with card hash"), "r")
-            last_four_digits = FileHandler.read_data(self.select_file("Select file with last four digits"), "r")
-            bin_value = FileHandler.read_data_tuple(self.select_file("Select file with card bin"),"r")  # Сбебранк использует номера 427XX-4279XX
-            dir_to_ser = os.path.join(self.select_directory("Select directory to serialization card number"), CARD_NUMBER_DIRECTORY)
+            hash_value = FileHandler.read_data(self.select_file("Select file with card hash"))
+            last_four_digits = FileHandler.read_data(self.select_file("Select file with last four digits"))
+            bin_value = FileHandler.read_data_tuple(self.select_file("Select file with card bin"))  # Сбебранк использует номера 427XX-4279XX
+            dir_to_save = os.path.join(self.select_directory("Select directory to serialization card number"), CARD_NUMBER_DIRECTORY)
             HashFunctionCollision.match_card_number(
                 hash_value,
                 last_four_digits,
                 bin_value,
-                dir_to_ser
+                dir_to_save
             )
-            self.show_message("Success", "Card number was matched and serialized to file", IconTypes.Information)
+            self.show_message("Success", "Card number was matched and saved to file", IconTypes.Information)
         except Warning as w:
             self.show_message("Fail", f"{w}", IconTypes.Information)
         except ValueError as ve:
@@ -128,6 +132,15 @@ class MainWindow(QMainWindow):
             self.show_message("Error", f"Something is wrong with data: {ve}", IconTypes.Critical)
         except Exception as e:
             self.show_message("Error", f"An error occurred when trying to check card number validate: {e}", IconTypes.Critical)
+
+    def measure_time(self):
+        hash_value = FileHandler.read_data(self.select_file("Select file with card hash"))
+        last_four_digits = FileHandler.read_data(self.select_file("Select file with last four digits"))
+        bin_value = FileHandler.read_data_tuple(self.select_file("Select file with card bin"))
+        try:
+            HashFunctionCollision.measuring_time(hash_value, last_four_digits, bin_value)
+        except Exception as e:
+            self.show_message("Error", f"An error occurred when trying to select the card number: {e}", IconTypes.Critical)
 
 
 if __name__ == "__main__":

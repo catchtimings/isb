@@ -9,7 +9,7 @@ class LuhnAlgorithm:
                 processed_sequence += digit
 
         s = sum(int(digit) for digit in processed_sequence)
-        c = (10 - (s % 10) % 10)
+        c = 10 - (s % 10) % 10
         return c
 
     @staticmethod
