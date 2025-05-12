@@ -11,7 +11,15 @@ class HashFunctionCollision:
     @staticmethod
     def match_card_number(
         card_hash: str, last_4_digits: str, card_bin: tuple, directory_to_save: str
-    ):
+    ) -> None:
+        """
+        The function matches the card number
+        :param card_hash: known hash of the card
+        :param last_4_digits: last 4 digits of the card
+        :param card_bin: known card bin
+        :param directory_to_save: directory to save card number
+        :return: None
+        """
         if not card_hash:
             raise ValueError("Card hash information must not be empty")
         if not last_4_digits:
@@ -23,7 +31,12 @@ class HashFunctionCollision:
         FileHandler.save_data(directory_to_save, {"card_number": card_number})
 
     @staticmethod
-    def check_validate(card_number: str):
+    def check_validate(card_number: str) -> bool:
+        """
+        The function checks validate of card number using luhn algorithm
+        :param card_number: card number to check
+        :return: true if card number is correct, else false
+        """
         if not card_number:
             raise ValueError("Card number info must not be empty")
         key = LuhnAlgorithm.luhn_algorithm(card_number)
@@ -32,7 +45,15 @@ class HashFunctionCollision:
         return False
 
     @staticmethod
-    def measuring_time(card_hash: tuple, last_4_digits: str, card_bin: str):
+    def measuring_time(card_hash: tuple, last_4_digits: str, card_bin: str) -> None:
+        """
+        The function measures the operating time of the card number matching function
+        during various processes and constructs bar diagram
+        :param card_hash: known hash of the card
+        :param last_4_digits: last 4 digits of the card
+        :param card_bin: known card bin
+        :return: None
+        """
         if not card_hash:
             raise ValueError("Card hash information must not be empty")
         if not last_4_digits:

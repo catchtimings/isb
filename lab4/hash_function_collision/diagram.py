@@ -1,7 +1,12 @@
 from matplotlib import pyplot as plt
 
 
-def construct_diagram(data: dict):
+def construct_diagram(data: dict) -> None:
+    """
+    The function constructs diagram
+    :param data: data to build a diagram
+    :return: None
+    """
     fig = plt.figure(figsize=(12, 6))
     plt.xlabel("cores")
     plt.ylabel("time to match")
